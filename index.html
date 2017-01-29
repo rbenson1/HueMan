@@ -21,6 +21,8 @@
                 game.load.spritesheet("blueRun", "assets/running-spritesheet-blue.png",36.8,50);
                 game.load.spritesheet("greenRun", "assets/running-spritesheet-green.png",36.8,50);
                 game.load.spritesheet("purpRun", "assets/running-spritesheet-purp.png",36.8,50);
+                
+                game.load.audio("sickJams","assets/HueManJam.mp3");
 
 
                 var matrix;
@@ -123,7 +125,7 @@
                 D = game.input.keyboard.addKey(Phaser.Keyboard.D);
                 
                 //timer
-                game.time.events.add(Phaser.Timer.SECOND * 90, endGame, this);
+                game.time.events.add(Phaser.Timer.SECOND * 65, endGame, this);
                 
                 //random shit
                 num1 = Math.floor(Math.random() * (5 - 1) + 1);
@@ -165,6 +167,10 @@
                     player2 = [purpMan, "purp"];
                     purpMan.alpha = 1;
                 }
+                
+                //lauren the queen
+                var music = game.add.audio("sickJams",1,false);                
+                music.play();
            }
 
             function changeColor(pos,color){
@@ -256,7 +262,7 @@
                 //changes the color of the tiles
             changeColor(aPos2,player2[1]);
                 
-                game.debug.text("Time left: " + game.time.events.duration, 32, 32);
+                game.debug.text("Time left: " + game.time.events.duration/1000, 32, 32);
 
 
             }
@@ -282,11 +288,11 @@
                 }
                 
                 if (p1Score>p2Score){
-                    console.log(player1[1]+" wins!");
+                    game.add.text(50, 300, player1[1]+" wins!", { fontSize: "100px", fill: "#999"});
                 }else if(p2Score > p1Score){
-                    console.log(player2[1]+" wins!");
+                    game.add.text(50, 300, player2[1]+" wins!", { fontSize: "100px", fill: "#999"});
                 }else if(p1Score == p2Score){
-                    console.log("its a tie!");
+                    game.add.text(50, 300, "it's a tie!", { fontSize: "100px", fill: "#999"});
                 }
             }
             
