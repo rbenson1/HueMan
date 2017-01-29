@@ -123,7 +123,7 @@
                 D = game.input.keyboard.addKey(Phaser.Keyboard.D);
                 
                 //timer
-                game.time.events.add(Phaser.Timer.SECOND * 120, endGame, this);
+                game.time.events.add(Phaser.Timer.SECOND * 90, endGame, this);
                 
                 //random shit
                 num1 = Math.floor(Math.random() * (5 - 1) + 1);
@@ -261,6 +261,8 @@
             
             function endGame(){
                 stop = true;
+                var p1Score = 0;
+                var p2Score = 0;
                 player1[0].animations.stop();
                 player1[0].body.velocity.x = 0;
                 player1[0].body.velocity.y = 0;
@@ -269,7 +271,21 @@
                 player2[0].body.velocity.x = 0;
                 player2[0].body.velocity.y = 0;
                 
-                console.log("endGame running");
+                for (i in matrix){
+                    if (matrix[i][3] == player1[1]){
+                        p1Score++;
+                    }else if (matrix[i][3] == player2[1]){
+                        p2Score++;
+                    }
+                }
+                
+                if (p1Score>p2Score){
+                    console.log(player1[1]+" wins!");
+                }else if(p2Score > p1Score){
+                    console.log(player2[1]+" wins!");
+                }else if(p1Score == p2Score){
+                    console.log("its a tie!");
+                }
             }
             
             
