@@ -3,23 +3,13 @@ var mainState = {
     //set up a return to map screen button
     preload: function() {
     
-        game.load.image('tile', 'assets/red_Tile_50X50.jpg');
-        game.load.image('tile2', 'assets/Sand_50X50_Tile copy.jpg');
+        game.load.image('genTile', 'assets/greyTile.png');
+        game.load.image('redTile', 'assets/redTile.png');
         game.load.image('tile3', 'assets/bird.png');
+        game.load.spritesheet("redRun", "assets/running-spritesheet-red.png",36.8,50);
 
 
-        var matrix = [[0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                   [0,0,0,0,0,0,0,0,0,0,0,0,0]];
+        var matrix;
         var p1;
         var p2;
         var p1Speed;
@@ -27,115 +17,97 @@ var mainState = {
         var p1Color;
         var p2Color;
         var color;
+        var tiles;
+        var tile; 
+        var redMan;
+        var blueMan;
+        var greenMan;
+        var purpMan;
     },
+    
     
     
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        matrix = new Array;
                 
-        var leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            leftKey.onDown.add(this.left, this);
-
-        var rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            rightKey.onDown.add(this.right, this);
-
-        var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-            upKey.onDown.add(this.up, this);
-
-        var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-            downKey.onDown.add(this.down, this);
         
-        // game.physics.arcade.overlap(this.p2, this.background, this.changeColor, null, this);
         
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 0, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 50, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 100, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 150, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 200, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 250, 'tile');  
-        }   
-
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 300, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 350, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 400, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 450, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 500, 'tile');  
-        }   
-        for (x = 0; x < 640; x+=50) {
-                this.background = game.add.sprite(x, 550, 'tile');  
-        }   
+        tiles = game.add.group();
+        tiles.enableBody = true;
         
-        this.p2 = game.add.sprite(600, 550, 'tile2');
-        console.log(this.p2)
+        for (var y = 0; y<600; y+=50){
+            for(var x = 0; x<650; x+=50){
+                tile = tiles.create(x,y,"genTile");
+                matrix.push([x,y,tile,"none"])
+            }
+        }
         
-        game.physics.arcade.enable(this.p2);
-        game.physics.arcade.enable(this.bacground);
+        console.log(matrix);
+        
+        redMan = game.add.sprite(50,50,"redRun");
+        game.physics.arcade.enable(redMan);
+        
+        redMan.animations.add("left",[6,7,8,9,10],15,true);
+        redMan.animations.add("right",[0,1,2,3,4],15,true);
+        
+        redMan.body.collideWorldBounds = true;
+        
 
    },
     
-    changeColor: function(){
-        console.log("Please")
-        this.color = game.add.sprite(0,0, 'tile3');
+    changeRed: function(i,r){
+        if(matrix[r,3] != "red"){
+            matrix [r,3] = tiles.create(i,r,"redTile");
+            matrix[r,4] = "red"
+        }
+},
+    
+    
+    update: function(){
+        cursors = game.input.keyboard.createCursorKeys();
+        
+        redMan.body.velocity.x = 0;
+    
+    if(cursors.left.isDown){ //makes dude go left
+        redMan.body.velocity.x=-300;
+        redMan.body.velocity.y=0;
+        redMan.animations.play("left");
+    }else if (cursors.right.isDown){//makes dude go right
+        redMan.body.velocity.x = 300;
+        redMan.body.velocity.y=0;
+        redMan.animations.play("right");
+    }else if (cursors.up.isDown){//makes dude go right
+        redMan.body.velocity.x = 0;
+        redMan.body.velocity.y=-300;
+    }else if (cursors.down.isDown){//makes dude go right
+        redMan.body.velocity.x = 0;
+        redMan.body.velocity.y=300;
+    }else{
+        redMan.body.velocity.x = 0;
+        redMan.body.velocity.y=0;
+        redMan.animations.stop();//makes dude stop
+        redMan.frame = 5;
+    }
+        
+        //game.physics.arcade.overlap(redMan, tiles, changeRed, null, this.changeRed);
+        
+        var i = redMan.x % 50;
+    i = redMan.x - r
+    
+    var r = redMan.y % 50
+    r = redMan.y - r
+    
+    changeRed(i,r/50);
+    
+    
     },
     
-     left: function() {
-        // move ship left
-         if (this.p2.x >= 50){
-             if (this.p2.x <= 600){
-                this.p2.x -= 50;
-                 console.log("left")
-             }
-         }
-    },
-    right: function() {
-        // move ship left
-        if (this.p2.x >= 0){
-            if (this.p2.x < 600){
-                this.p2.x += 50;
-                console.log("right")
-            }
-        }
-    },
-    up: function() {
-        // move ship left
-        if (this.p2.y > 0){
-            if (this.p2.y <650){
-                this.p2.y -= 50;
-                console.log("Up")
-            } 
-        }
-    },
-    down: function() {
-        // move ship left
-        if (this.p2.y >= 0){
-            if (this.p2.y < 550){
-                this.p2.y += 50;
-                console.log("Down")
-            }
-        }  
-    },
+    
     
 }
+
+
 
 
 // Initialize Phaser, and create a 400px by 490px game
