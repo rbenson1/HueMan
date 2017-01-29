@@ -11,168 +11,187 @@
             
             function preload() {
     
-        game.load.image('genTile', 'assets/greyTile.png');
-        game.load.image('redTile', 'assets/redTile.png');
-        game.load.image('blueTile', 'assets/blueTile.png');
-        game.load.spritesheet("redRun", "assets/running-spritesheet-red.png",36.8,50);
-        game.load.spritesheet("blueRun", "assets/running-spritesheet-blue.png",36,50);
+                game.load.image('genTile', 'assets/greyTile.png');
+                game.load.image('redTile', 'assets/redTile.png');
+                game.load.image('blueTile', 'assets/blueTile.png');
+                game.load.spritesheet("redRun", "assets/running-spritesheet-red.png",36.8,50);
+                game.load.spritesheet("blueRun", "assets/running-spritesheet-blue.png",36.8,50);
 
 
-        var matrix;
-        var p1;
-        var p2;
-        var p1Speed;
-        var p2Speed;
-        var p1Color;
-        var p2Color;
-        var color;
-        var tiles;
-        var tile; 
-        var redMan;
-        var blueMan;
-        var greenMan;
-        var purpMan;
-        var W;
+                var matrix;
+                var p1;
+                var p2;
+                var p1Speed;
+                var p2Speed;
+                var p1Color;
+                var p2Color;
+                var color;
+                var tiles;
+                var tile; 
+                var redMan;
+                var blueMan;
+                var greenMan;
+                var purpMan;
+                var W;
                 var A;
                 var S;
                 var D;
-    }
-    
-    
-    
-    function create() {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        matrix = new Array;
                 
-        
-        
-        tiles = game.add.group();
-        tiles.enableBody = true;
-        
-        for (var y = 0; y<600; y+=50){
-            for(var x = 0; x<650; x+=50){
-                tile = tiles.create(x,y,"genTile");
-                matrix.push([x,y,tile,"none"])
             }
-        }
-        
-        console.log(matrix);
-        
-        redMan = game.add.sprite(550,0,"redRun");
-        game.physics.arcade.enable(redMan);
-        redMan.anchor.x = .5;
-        redMan.anchor.y = .5;
-        
-        redMan.animations.add("left",[6,7,8,9,10],15,true);
-        redMan.animations.add("right",[0,1,2,3,4],15,true);
-        
-        redMan.body.collideWorldBounds = true;
-        
-        blueMan = game.add.sprite(0,0,"blueRun");
-        game.physics.arcade.enable(blueMan);
-        blueMan.anchor.x = .5;
-        blueMan.anchor.y = .5;
-        
-        blueMan.animations.add("left",[6,7,8,9,10],15,true);
-        blueMan.animations.add("right",[0,1,2,3,4],15,true);
-        
-        blueMan.body.collideWorldBounds = true;
-        
-        W = game.input.keyboard.addKey(Phaser.Keyboard.W);
-        A = game.input.keyboard.addKey(Phaser.Keyboard.A);
-        S = game.input.keyboard.addKey(Phaser.Keyboard.S);
-        D = game.input.keyboard.addKey(Phaser.Keyboard.D);
-        
+            
+            var stop = false;
 
-   }
-    
-    function changeColor(pos,color){
-        //console.log(matrix[r/50][0]);
-        if(matrix[pos][3] != color){
-            matrix [pos][2] = tiles.create(matrix[pos][0],matrix[pos][1],color+"Tile");
-            matrix[pos][3] = color
+
+
+            function create() {
+                game.physics.startSystem(Phaser.Physics.ARCADE);
+                matrix = new Array;
+
+
+
+                tiles = game.add.group();
+                tiles.enableBody = true;
+
+                for (var y = 0; y<600; y+=50){
+                    for(var x = 0; x<650; x+=50){
+                        tile = tiles.create(x,y,"genTile");
+                        matrix.push([x,y,tile,"none"])
+                    }
+                }
+
+                console.log(matrix);
+
+                redMan = game.add.sprite(630,0,"redRun");
+                game.physics.arcade.enable(redMan);
+                redMan.anchor.x = .5;
+                redMan.anchor.y = .5;
+
+                redMan.animations.add("left",[6,7,8,9,10],15,true);
+                redMan.animations.add("right",[0,1,2,3,4],15,true);
+
+                redMan.body.collideWorldBounds = true;
+
+                blueMan = game.add.sprite(0,0,"blueRun");
+                game.physics.arcade.enable(blueMan);
+                blueMan.anchor.x = .5;
+                blueMan.anchor.y = .5;
+
+                blueMan.animations.add("left",[6,7,8,9,10],15,true);
+                blueMan.animations.add("right",[0,1,2,3,4],15,true);
+
+                blueMan.body.collideWorldBounds = true;
+
+                W = game.input.keyboard.addKey(Phaser.Keyboard.W);
+                A = game.input.keyboard.addKey(Phaser.Keyboard.A);
+                S = game.input.keyboard.addKey(Phaser.Keyboard.S);
+                D = game.input.keyboard.addKey(Phaser.Keyboard.D);
+
+                game.time.events.add(Phaser.Timer.SECOND * 120, endGame, this);
+
+
+           }
+
+            function changeColor(pos,color){
+                //console.log(matrix[r/50][0]);
+                if(matrix[pos][3] != color){
+                    matrix [pos][2] = tiles.create(matrix[pos][0],matrix[pos][1],color+"Tile");
+                    matrix[pos][3] = color
+                }
         }
-}
-    
-    
-    function update(){
-        cursors = game.input.keyboard.createCursorKeys();
-        
-        redMan.body.velocity.x = 0;
-        blueMan.body.velocity.x = 0;
-    
-    if(cursors.left.isDown){ //makes dude go left
-        redMan.body.velocity.x=-300;
-        redMan.body.velocity.y=0;
-        redMan.animations.play("left");
-    }else if (cursors.right.isDown){//makes dude go right
-        redMan.body.velocity.x = 300;
-        redMan.body.velocity.y=0;
-        redMan.animations.play("right");
-    }else if (cursors.up.isDown){//makes dude go right
-        redMan.body.velocity.x = 0;
-        redMan.body.velocity.y=-300;
-    }else if (cursors.down.isDown){//makes dude go right
-        redMan.body.velocity.x = 0;
-        redMan.body.velocity.y=300;
-    }else{
-        redMan.body.velocity.x = 0;
-        redMan.body.velocity.y=0;
-        redMan.animations.stop();//makes dude stop
-        redMan.frame = 5;
-    }
-        
-        if(A.isDown){ //makes dude go left
-        blueMan.body.velocity.x=-300;
-        blueMan.body.velocity.y=0;
-        blueMan.animations.play("left");
-    }else if (D.isDown){//makes dude go right
-        blueMan.body.velocity.x = 300;
-        blueMan.body.velocity.y=0;
-        blueMan.animations.play("right");
-    }else if (W.isDown){//makes dude go right
-        blueMan.body.velocity.x = 0;
-        blueMan.body.velocity.y=-300;
-    }else if (S.isDown){//makes dude go right
-        blueMan.body.velocity.x = 0;
-        blueMan.body.velocity.y=300;
-    }else{
-        blueMan.body.velocity.x = 0;
-        blueMan.body.velocity.y=0;
-        blueMan.animations.stop();//makes dude stop
-        blueMan.frame = 5;
-    }
-        
-       
-        //Math af
-        //red
-        var hRemR = redMan.x % 50;
-    hPosR = redMan.x - hRemR;
-    hPosR /= 50;
-    
-    var vRemR = redMan.y % 50;
-    vPosR = redMan.y - vRemR;
-    vPosR /= 50;
-        
-        var aPosR = hPosR+(13*vPosR);
-    
-    changeColor(aPosR,"red");
-        
-        //blue
-        var hRemB = blueMan.x % 50;
-    hPosB = blueMan.x - hRemB;
-    hPosB /= 50;
-    
-    var vRemB = blueMan.y % 50;
-    vPosB = blueMan.y - vRemB;
-    vPosB/= 50;
-        
-        var aPosB = hPosB+(13*vPosB);
-    
-    changeColor(aPosB,"blue");
-    
-    
-    }
+
+
+            function update(){
+                cursors = game.input.keyboard.createCursorKeys();
+
+                redMan.body.velocity.x = 0;
+                blueMan.body.velocity.x = 0;
+
+            if(cursors.left.isDown && !stop){ //makes dude go left
+                redMan.body.velocity.x=-300;
+                redMan.body.velocity.y=0;
+                redMan.animations.play("left");
+            }else if (cursors.right.isDown && !stop){//makes dude go right
+                redMan.body.velocity.x = 300;
+                redMan.body.velocity.y=0;
+                redMan.animations.play("right");
+            }else if (cursors.up.isDown&& !stop){//makes dude go right
+                redMan.body.velocity.x = 0;
+                redMan.body.velocity.y=-300;
+            }else if (cursors.down.isDown&& !stop){//makes dude go right
+                redMan.body.velocity.x = 0;
+                redMan.body.velocity.y=300;
+            }else{
+                redMan.body.velocity.x = 0;
+                redMan.body.velocity.y=0;
+                redMan.animations.stop();//makes dude stop
+                redMan.frame = 5;
+            }
+
+                if(A.isDown&& !stop){ //makes dude go left
+                blueMan.body.velocity.x=-300;
+                blueMan.body.velocity.y=0;
+                blueMan.animations.play("left");
+            }else if (D.isDown&& !stop){//makes dude go right
+                blueMan.body.velocity.x = 300;
+                blueMan.body.velocity.y=0;
+                blueMan.animations.play("right");
+            }else if (W.isDown&& !stop){//makes dude go right
+                blueMan.body.velocity.x = 0;
+                blueMan.body.velocity.y=-300;
+            }else if (S.isDown&& !stop){//makes dude go right
+                blueMan.body.velocity.x = 0;
+                blueMan.body.velocity.y=300;
+            }else{
+                blueMan.body.velocity.x = 0;
+                blueMan.body.velocity.y=0;
+                blueMan.animations.stop();//makes dude stop
+                blueMan.frame = 5;
+            }
+
+
+                //Math af
+                //red
+                //cats
+                var hRemR = redMan.x % 50;
+            hPosR = redMan.x - hRemR;
+            hPosR /= 50;
+
+            var vRemR = redMan.y % 50;
+            vPosR = redMan.y - vRemR;
+            vPosR /= 50;
+
+                var aPosR = hPosR+(13*vPosR);
+
+            changeColor(aPosR,"red");
+
+                //blue
+                var hRemB = blueMan.x % 50;
+            hPosB = blueMan.x - hRemB;
+            hPosB /= 50;
+
+            var vRemB = blueMan.y % 50;
+            vPosB = blueMan.y - vRemB;
+            vPosB/= 50;
+
+                var aPosB = hPosB+(13*vPosB);
+
+            changeColor(aPosB,"blue");
+
+
+            }
+            
+            function endGame(){
+                stop = true;
+                redMan.animations.stop();
+                redMan.body.velocity.x = 0;
+                redMan.body.velocity.y = 0;
+                
+                blueMan.animations.stop();
+                blueMan.body.velocity.x = 0;
+                blueMan.body.velocity.y = 0;
+                
+                console.log("endGame running");
+            }
             
             
         
